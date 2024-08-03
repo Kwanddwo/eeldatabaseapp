@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+        <title>Nouveau Entrée</title>
+        <link rel="icon" type="image/png" href="img/favicon.png">
+        <link rel="stylesheet" href="css/main.css">
+        <script type="text/javascript" src="/eel.js"></script>
+        <script type="text/javascript">
+
+            function getEntry() {
+                return JSON.stringify({
+                    'client_id': document.getElementById('client_id').value,
+                    'prix': document.getElementById('prix').value,
+                    'date': document.getElementById('date').value,
+                    'acte': document.getElementById('acte').value,
+                });
+            }
+            
+            document.addEventListener('DOMContentLoaded', () => {
+                document.getElementById('form').onsubmit = (e) => {
+                    e.preventDefault();
+                    const entry = getEntry();
+                    console.log(entry);
+
+                    document.getElementById('client_id').value = '';
+                    document.getElementById('prix').value = '';
+                    document.getElementById('date').value = '';
+                    document.getElementById('acte').value = '';
+
+                    document.getElementById('message').innerText = 'Added Entry Successfully';
+
+                    eel.pyGetEntry(entry);
+                }
+            });
+
+            document.oncontextmenu = (e) => {
+                    e.preventDefault();
+            }
+                
+        </script>
+	</head>
+	<body>
+		<nav> 
+            <a href="search.html">Chercher le base de données</a>
+            <a href="client.html">Nouveau Client</a>
+            <a href="main.html" class="current">Nouveau Entrée</a>
+        </nav>
+
+		<form id="form" autocomplete="off">
+            <input required type="number" placeholder="Client ID" id="client_id">
+			<input required type="text" placeholder="Prix" id="prix">
+			<input required type="datetime-local" placeholder="Date" id="date">
+		    <textarea required placeholder="Acte" id="acte"></textarea>
+            <button type="submit" id="entry-submit">Soumettre</button>
+		</form>
+
+        <h5 id="message"></h5>
+	</body>
+</html>

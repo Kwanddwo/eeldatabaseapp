@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <title>Client View</title>
+        <link rel="icon" type="image/png" href="img/favicon.png">
+        <link rel="stylesheet" href="css/main.css">
+        <script type="text/javascript" src="/eel.js"></script>
+        <script type="text/javascript">
+            async function getClient() {
+                const ClientId = window.location.search.replace('?id=', '');
+                let client = await eel.pySendClient(ClientId)();
+                return client;
+            }
+
+            document.addEventListener('DOMContentLoaded', async () => {
+                let client = await getClient();
+                console.log(client);
+
+                const listItems = document.querySelectorAll('li');
+
+                for (let i = 0; i < 4; i++) {
+                    listItems[i].innerHTML += client[i];
+                }
+
+            })
+        </script>
+    </head>
+    <body>
+        <nav> 
+            <a onclick="window.history.back()"><</a>
+            <a href="search.html">Chercher le base de données</a>
+            <a href="client.html">Nouveau Client</a>
+            <a href="main.html">Nouveau Entrée</a>
+        </nav>
+
+        <h1>Client View</h1>
+
+        <ul class="list">
+            <li>ID: </li>
+            <li>Nom: </li>
+            <li>Prénom: </li>
+            <li>Téléphone: </li>
+        </ul>
+    </body>
+</html>

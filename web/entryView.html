@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <title>Entry View</title>
+        <link rel="icon" type="image/png" href="img/favicon.png">
+        <link rel="stylesheet" href="css/main.css">
+        <script type="text/javascript" src="/eel.js"></script>
+        <script type="text/javascript">
+            async function getEntry() {
+                const EntryId = window.location.search.replace('?entry_id=', '');
+                let entry = await eel.pySendEntry(EntryId)();
+                return entry;
+            }
+
+            document.addEventListener('DOMContentLoaded', async () => {
+                let entry = await getEntry();
+
+                const listItems = document.querySelectorAll('li');
+
+                for (let i = 0; i < 5; i++) {
+                    listItems[i].innerHTML += entry[i];
+                }
+
+                listItems[3].innerHTML = 'Date: ' + entry[3].replace('T', ' ');
+
+            })
+        </script>
+    </head>
+    <body>
+        <nav> 
+            <a onclick="window.history.back()"><</a>
+            <a href="search.html">Chercher le base de données</a>
+            <a href="client.html">Nouveau Client</a>
+            <a href="main.html">Nouveau Entrée</a>
+        </nav>
+
+        <h1>Entry View</h1>
+
+        <ul class="list">
+            <li>Entry ID: </li>
+            <li>Client ID: </li>
+            <li>Prix: </li>
+            <li>Date: </li>
+            <li>Acte: </li>
+        </ul>
+    </body>
+</html>

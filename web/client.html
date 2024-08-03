@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+        <title>Nouveau Client</title>
+        <link rel="icon" type="image/png" href="img/favicon.png">
+        <link rel="stylesheet" href="css/main.css">
+        <script type="text/javascript" src="/eel.js"></script>
+        <script type="text/javascript">
+
+            function getClient() {
+                return JSON.stringify({
+                    'nom': document.getElementById('nom').value,
+                    'prenom': document.getElementById('prenom').value,
+                    'telephone': document.getElementById('telephone').value
+                });
+            }
+            
+            document.addEventListener('DOMContentLoaded', () => {
+                document.getElementById('form').onsubmit = (e) => {
+                    e.preventDefault();
+                    const client = getClient();
+
+                    const message = document.getElementById('message');
+
+                    if (eel.pyGetEntry(client)()) {
+                        document.getElementById('nom').value = '';
+                        document.getElementById('prenom').value = '';
+                        document.getElementById('telephone').value = '';
+                        message.innerText = 'Added Client Successfully';
+                    } else {
+                        message.innerText = 'An Error Has Happened';
+                    }
+
+                    message.style.animationPlayState = 'running';
+                }
+            });
+
+            document.oncontextmenu = (e) => {
+                    e.preventDefault();
+            }
+                
+        </script>
+	</head>
+	<body>
+		<nav>
+            <a onclick="window.history.back()"><</a>
+            <a href="search.html">Chercher le base de données</a>
+            <a href="client.html" class="current">Nouveau Client</a>
+            <a href="main.html">Nouveau Entrée</a>
+        </nav>
+
+		<form id="form" autocomplete="off">
+			<input required type="text" pattern="[a-zA-Z]*" placeholder="Nom" id="nom">
+			<input required type="text" pattern="[a-zA-Z]*" placeholder="Prénom" id="prenom">
+            <input required type="text" pattern="0[0-9]*" minlength="10" placeholder="Telephone" id="telephone">
+            <button type="submit">Soumettre</button>
+		</form>
+        <div id="message-wrapper">
+            <h5 id="message">This is a message</h5>
+        </div>
+	</body>
+</html>

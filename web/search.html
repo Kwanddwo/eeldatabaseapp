@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+        <title>Base de données</title>
+        <link rel="icon" type="image/png" href="img/favicon.png">
+        <link rel="stylesheet" href="css/main.css">
+        <script type="text/javascript" src="/eel.js"></script>
+        <script type="text/javascript">
+
+            document.addEventListener('DOMContentLoaded', () => {
+                getEntries();
+                getClients();
+
+                document.querySelector('#client-form').onsubmit = (e) => {
+                    e.preventDefault();
+
+                    let query = {};
+                    query.id = document.getElementById('id').value;
+                    query.nom = document.getElementById('nom').value;
+                    query.prenom = document.getElementById('prenom').value;
+                    query.telephone = document.getElementById('telephone').value;
+
+                    // Check if form is empty
+                    if (query.id == query.nom == query.prenom == query.telephone) {
+                        getClients();
+                    } else {
+                        getClients(query);
+                    }
+                    
+                }
+
+                document.querySelector('#entry-form').onsubmit = (e) => {
+                    e.preventDefault();
+
+                    let query = {};
+                    query.entry_id = document.getElementById('entry-id').value;
+                    query.client_id = document.getElementById('client-id').value;
+                    query.prix = document.getElementById('prix').value;
+                    query.date = document.getElementById('date').value;
+
+                    // Check if form is empty
+                    if (query.entry_id == query.client_id == query.prix == query.date) {
+                        getEntries();
+                    } else {
+                        getEntries(query);
+                    }
+                    
+                }
+
+                document.oncontextmenu = (e) => {
+                    e.preventDefault();
+                }
+            });
+
+            async function getEntries(query) {
+                const entryBody = document.getElementById('table-entry-body');
+                entryBody.innerHTML = '';
+
+                let entries = await eel.pySendEntries(query)();
+
+                console.log('entries');
+                console.log(entries);
+                for (const entry of entries) {
+                    const tableRow = createTableRow(entry);
+                    entryBody.appendChild(tableRow)
+                }
+            }
+
+            async function getClients(query) {
+                const clientBody = document.getElementById('table-client-body');
+                clientBody.innerHTML = '';
+
+                let clients = await eel.pySendClients(query)();
+                
+                console.log('clients');
+                console.log(clients);
+                for (const client of clients) {
+                    const tableRow = createTableRow(client);
+                    clientBody.appendChild(tableRow);
+                } 
+            }
+
+            function createTableRow(data) {
+                const tableRow = document.createElement('tr');
+                for (const [key, value] of Object.entries(data)) {
+
+                    if (key === 'id') {
+                        tableRow.onclick = () => {window.location.assign('clientView.html?id=' + value)};
+                    }
+
+                    if (key === 'entry_id') {
+                        tableRow.onclick = () => {window.location.assign('entryView.html?entry_id=' + value)};
+                    }
+
+                    const tableData = document.createElement('td');
+                    if (key === 'date') {
+                        tableData.innerHTML = value.replace('T', ' ');
+                    } else if (key === 'prix') {
+                        tableData.innerHTML = value + ' DH';
+                    } else {
+                        tableData.innerHTML = value;
+                    }
+                    tableRow.appendChild(tableData);
+                }
+                
+                return tableRow;
+            }
+                
+        </script>
+	</head>
+	<body>
+		<nav> 
+            <a onclick="window.history.back()"><</a>
+            <a href="search.html" class="current">Chercher le base de données</a>
+            <a href="client.html">Nouveau Client</a>
+            <a href="main.html">Nouveau Entrée</a>
+        </nav>
+
+        <h3>Clients</h3>
+        <form id="client-form" autocomplete="off">
+            <input type="number" placeholder="ID" id="id" min="1">
+            <input type="text" pattern="[a-zA-Z]*" placeholder="Nom" id="nom">
+            <input type="text" pattern="[a-zA-Z]*" placeholder="Prénom" id="prenom">
+            <input type="text" pattern="0[0-9]*" placeholder="Téléphone" id="telephone">
+            <button type="submit">Chercher</button>
+        </form>
+        <table>
+            <thead>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Téléphone</th>
+            </thead>
+            <tbody id="table-client-body">
+                </tbody>
+        </table>
+
+        <hr>
+        
+        <h3>Entrées</h3>
+        <form id="entry-form" autocomplete="off">
+            <input type="number" placeholder="ID" id="entry-id" min="1">
+            <input type="number" placeholder="Client ID" id="client-id" min="1">
+            <input type="text" pattern="[0-9]*" placeholder="Prix (DH)" id="prix">
+            <input type="datetime-local" placeholder="Date" id="date">
+            <button type="submit">Chercher</button>
+        </form>
+        <table>
+            <thead>
+                <th>ID</th>
+                <th>Client ID</th>
+                <th>Prix (DH)</th>
+                <th>Date</th>
+                <th>Acte</th>
+            </thead>
+            <tbody id="table-entry-body">
+                </tbody>
+        </table>
+	</body>
+</html>

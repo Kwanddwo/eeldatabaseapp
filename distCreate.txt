@@ -1,0 +1,1 @@
+python -m eel dentist.py web --noconfirm
